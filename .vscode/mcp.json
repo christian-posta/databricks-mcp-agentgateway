@@ -1,0 +1,18 @@
+{
+  "servers": {
+    "databricks-unity-catalog": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/ceposta/python/databricks-mcp",
+        "run",
+        "unitycatalog-mcp",
+        "-s",
+        "samples.bakehouse",
+        "-g",
+        "01f0c63f9db919cb9411ea702ec4df93"
+      ]
+    }
+  }
+}

@@ -2,7 +2,7 @@
 source ~/bin/ai-keys
 echo $DATABRICKS_PAT
 
-databricks configure --token --host https://dbc-018eefb2-cdcc.cloud.databricks.com
+databricks configure --token --host https://dbc-f1002050-7c6a.cloud.databricks.com
 ```
 
 
@@ -22,7 +22,7 @@ Configure in VS Code:
         "-s",
         "samples.bakehouse",
         "-g",
-        "01f0c63f9db919cb9411ea702ec4df93"
+        "01f0c67c0cda1eb5b34096d638d3be44"
       ]
     }
   }
@@ -32,10 +32,14 @@ Configure in VS Code:
 Make sure to grab the genie ID:
 
 ```
-01f0c63f9db919cb9411ea702ec4df93
+01f0c67c0cda1eb5b34096d638d3be44
 ```
 
 From Co-Pilot, prompt with:
+
+```
+Can you list available Genies?
+```
 
 ```
 Using the Genie tools, start a conversation about the bakehouse sales data

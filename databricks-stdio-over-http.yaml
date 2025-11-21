@@ -1,0 +1,105 @@
+# yaml-language-server: $schema=../../schema/local.json
+config:    
+  metrics:
+    fields:
+      add:
+        user_id: "jwt.sub" 
+        user_name: 'jwt.preferred_username'
+  logging:
+    fields:
+      add:
+        user_id: "jwt.sub" 
+        user_name: 'jwt.name'
+        authenticated: 'jwt.sub != null'
+        jwt_act: "jwt.act"
+        token_issuer: 'jwt.iss'
+        token_audience: 'jwt.aud'       
+
+binds:
+- port: 3000
+  listeners:
+  - routes:
+# ------------------------------------------------------------
+# Insecure MCP route
+# ------------------------------------------------------------  
+    - matches:
+      - path:
+          exact: /insecure/mcp
+      backends:
+      - mcp:
+          targets:
+          - name: databricks-unity-catalog
+            stdio:
+              cmd: uv
+              args: [
+                "--directory",
+                "/Users/ceposta/python/databricks-mcp",
+                "run",
+                "unitycatalog-mcp",
+                "-s",
+                "samples.bakehouse",
+                "-g",
+                "01f0c63f9db919cb9411ea702ec4df93"
+              ]  
+
+# ------------------------------------------------------------
+# MCP route
+# ------------------------------------------------------------
+    - matches:
+      - path:
+          exact: /mcp
+      - path:
+          exact: /.well-known/oauth-protected-resource/mcp
+      - path:
+          exact: /.well-known/oauth-authorization-server/mcp
+      backends:
+      - mcp:
+          targets:
+          - name: databricks-unity-catalog
+            stdio:
+              cmd: uv
+              args: [
+                "--directory",
+                "/Users/ceposta/python/databricks-mcp",
+                "run",
+                "unitycatalog-mcp",
+                "-s",
+                "samples.bakehouse",
+                "-g",
+                "01f0c63f9db919cb9411ea702ec4df93"
+              ]  
+      policies:
+        cors:
+          allowOrigins:
+          - "*"
+          allowHeaders:
+          - "*"
+          allowMethods:
+          - "*"
+        requestHeaderModifier:
+          remove:
+          - x-forwarded-for
+          - x-forwarded-host
+          - x-forwarded-proto          
+        backendTLS: {}
+        mcpAuthorization:
+          rules:
+          - "'call:supply-chain' in jwt.permissions && (mcp.tool.name != 'genie_generate_download')"        
+        mcpAuthentication:
+          issuer: https://ceposta-solo.auth0.com/
+          jwksUrl: https://ceposta-solo.auth0.com/.well-known/jwks.json
+          audience: https://ceposta-agw.ngrok.io/mcp
+          provider:
+            auth0: {}
+          resourceMetadata:
+            authorizationServers:
+            - https://ceposta-agw.ngrok.io/mcp          
+            resource: https://ceposta-agw.ngrok.io/mcp
+            scopesSupported:
+            - openid
+            bearerMethodsSupported:
+            - header
+            - body
+            - query
+            resourceDocumentation: https://ceposta-agw.ngrok.io/mcp/docs
+            resourcePolicyUri: https://ceposta-agw.ngrok.io/mcp/policies   

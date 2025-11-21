@@ -48,3 +48,7 @@ Using the Genie tools, start a conversation about the bakehouse sales data
 ```
 Using your tools from databricks-unity-catalog show me the first 10 rows from the sales_customers table in samples.bakehouse
 ```
+
+Connect from MCP Inspector:
+
+CLIENT_ID=bc212229-5f19-40c4-ac05-e02a3dbfe3a2
